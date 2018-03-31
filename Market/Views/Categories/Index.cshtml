@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Market.Models.Category>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Categories</h2>
+
+@using (Html.BeginForm())
+{
+    <button id="btngetCategories" class="btn">Get Categories</button><br />
+    <button id="btngetCategory" class="btn">Get Category</button><br />
+    <button id="btnaddCategory" class="btn">Add Category</button><br />
+    <button id="btnupdateCategory" class="btn">Update Category</button><br />
+    <button id="btndeleteCategory" class="btn">Delete Category</button><br /><br /><br />
+
+
+    <input id="txtCategoryId" type="text" placeholder="Category Id" class="form-control" />
+    <input id="txtCategoryName" type="text" placeholder="Category Name" class="form-control" />
+    <br /><br />
+    <div id="lblmensaje"></div>
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#btngetCategories").on("click", function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/CategoriesAPI",
+                    dataType: "json",
+                    cache: false,
+                })
+                .success(function (data) {
+                    var outPut = '';
+                    for (var i = 0; i < data.length; i++) {
+                        outPut += "<hr>";
+                        outPut += "<b>Category ID: </b>" + data[i].CategoryId + "<br />";
+                        outPut += "<b>Description: </b>" + data[i].CategoryName + "<br />";
+                    }
+                    $("#lblmensaje").html(outPut);
+                })
+                .error(function (hxr, ajaxOption, throwError) {
+                    $("#lblmensaje").html("Error");
+                });
+                return false;
+            });
+
+            $(document).ajaxStart(function () {
+                $("#loading").show();
+            });
+
+            $(document).ajaxStop(function () {
+                $("#loading").hide();
+            });
+        });
+    </script>
+}
+
+<style type="text/css">
+    #loading {
+        display: none;
+        background-color: gray;
+        z-index: 999999;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        padding-top: 300px;
+        filter: alpha(opacity=80);
+        -khtml-opacity: 0.8;
+        -moz-opacity: 0.8;
+        opacity: 0.8;
+    }
+</style>
+<div id="loading"><img src="~/Images/loader.gif" /></div>
